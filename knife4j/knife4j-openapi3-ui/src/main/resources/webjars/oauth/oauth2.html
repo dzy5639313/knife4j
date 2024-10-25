@@ -65,13 +65,12 @@
         var that=this;
         console.log(this.cacheValue);
         var url=this.cacheValue.tokenUrl;
-        var params={
-            "grant_type":"authorization_code",
-            "code":this.code,
-            "redirect_uri":decodeURIComponent(this.cacheValue.redirectUri),
-            "client_id":`${this.cacheValue.clientId}`,
-            "client_secret":`${this.cacheValue.clientSecret}`
-        }
+        var formData = new FormData();
+        formData.append("grant_type", "authorization_code");
+        formData.append("code", this.code);
+        formData.append("redirect_uri", decodeURIComponent(this.cacheValue.redirectUri));
+        formData.append("client_id", this.cacheValue.clientId);
+        formData.append("client_secret", this.cacheValue.clientSecret);
         let instance=axios.create();
         let requestConfig={
             url: url,
@@ -80,7 +79,7 @@
             //此data必传,不然默认是data:undefined,https://github.com/axios/axios/issues/86
             //否则axios会忽略请求头Content-Type
             // spring-authorization-server only support get param form request body，see https://github.com/spring-projects/spring-authorization-server/issues/1451
-            data: params,
+            data: formData,
             // params:params
         }
         instance.request(requestConfig).then(res=>{
